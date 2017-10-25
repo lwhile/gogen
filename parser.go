@@ -11,7 +11,8 @@ import (
 type Parser interface {
 	Parse() error
 	Render() error
-	Output() string
+	Output() error
+	String() string
 }
 
 type jsonParser struct {
@@ -70,7 +71,11 @@ func (pr *jsonParser) Render() error {
 	return nil
 }
 
-func (pr *jsonParser) Output() string {
+func (pr *jsonParser) Output() error {
+	return nil
+}
+
+func (pr *jsonParser) String() string {
 	return pr.res
 }
 
