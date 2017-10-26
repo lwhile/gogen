@@ -27,7 +27,17 @@ type Struct struct {
 
 // Field :
 type Field struct {
-	Name string
-	Type string
-	Tag  string
+	Key  string
+	Type interface{}
 }
+
+// // Type :
+// type Type struct {
+// 	nesting bool
+// 	Name    interface{}
+// }
+
+// // TypeStr return string form of f.Type
+// func (f *Field) TypeStr() string {
+// 	switch f.
+// }
