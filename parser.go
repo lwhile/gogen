@@ -1,6 +1,7 @@
 package gogen
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -23,6 +24,7 @@ type jsonParser struct {
 
 	p  interface{}
 	st *Struct
+	bf bytes.Buffer
 }
 
 // NewJSONParser return a parser about json
@@ -62,6 +64,7 @@ func (pr *jsonParser) parse(st *Struct, m map[string]interface{}) (err error) {
 		} else {
 			stInternal := &Struct{}
 			stInternal.Fields = make([]Field, 0)
+			stInternal.nesting = true
 			field.Type = stInternal
 			pr.parse(stInternal, mm)
 		}
@@ -90,22 +93,25 @@ func (pr *jsonParser) Render() error {
 
 func (pr *jsonParser) render(st *Struct) (err error) {
 	if st == nil {
-		err = fmt.Errorf("st is nil")
+		err = fmt.Errorf("error to serialize a nil struct to []byte")
 		log.Error(err)
 		return
 	}
-	for _, field := range st.Fields {
-		if t, ok := field.Type.(string); ok {
-			fmt.Println(field.Key, ": ", t)
-		} else {
-			if v, ok := field.Type.(*Struct); ok {
-				fmt.Print(field.Key, ":\n\t")
-				pr.render(v)
-			} else {
-				err = fmt.Errorf("%v is not a Struct type", field.Type)
-				log.Error(err)
-				return
-			}
+
+	if !st.nesting {
+		if _, err = pr.bf.Write(st.firstStr()); err != nil {
+			return
+		}
+	} else {
+
+	}
+
+	for _, f := range st.Fields {
+		if _, err = pr.bf.Write([]byte(FOURSPACE + f.Key + SPACE)); err != nil {
+			return
+		}
+		if v, ok := st.(*Struct); ok {
+
 		}
 	}
 	return nil

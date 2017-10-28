@@ -15,6 +15,32 @@ var p = []byte(`{
 	}
 }`)
 
+var r = []byte(`type Test struct {
+	s string 
+	i int 
+	T struct {
+		t1 string 
+		t2 int 
+		T1 struct {
+			t1A string 
+		}
+	}
+	B float32
+}`)
+
+type Test struct {
+	s string
+	i int
+	T struct {
+		t1 string
+		t2 int
+		T1 struct {
+			t1A string
+		}
+	}
+	B float32
+}
+
 func Test_jsonParser_Parse(t *testing.T) {
 	pr := NewJSONParser(p)
 	err := pr.Parse()
