@@ -61,6 +61,9 @@ func (pr *jsonParser) parse(st *Struct, m map[string]interface{}) (err error) {
 		field.Key = k
 		// fmt.Println("field.Key:", field.Key)
 		if mm, ok := isMap(v); !ok {
+			// if _, ok := isArray(v); ok {
+			// 	field.array = true
+			// }
 			field.Type = typeStr(v)
 		} else {
 			stInternal := &Struct{}
@@ -134,10 +137,17 @@ func isMap(m interface{}) (map[string]interface{}, bool) {
 	return v, ok
 }
 
+func isArray(a interface{}) ([]interface{}, bool) {
+	v, ok := a.([]interface{})
+	return v, ok
+}
+
 func typeStr(ife interface{}) (s string) {
 	switch ife.(type) {
 	case string:
 		s = "string"
+	case []string:
+		s = "[]string"
 	case int:
 		s = "int"
 	case int64:
@@ -148,6 +158,16 @@ func typeStr(ife interface{}) (s string) {
 		s = "float32"
 	case float64:
 		s = "float64"
+	case []interface{}:
+		v := ife.([]interface{})
+		switch v[len(v)-1].(type) {
+		case float64:
+			s = "[]float64"
+		case string:
+			s = "[]string"
+			// default:
+			// 	s = "[]"
+		}
 	default:
 		s = "interface{}"
 	}

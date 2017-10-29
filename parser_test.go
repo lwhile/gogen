@@ -15,8 +15,16 @@ var p = []byte(`{
 			"key3BB": {
 				"key3BBA":1
 			}
-		}
-	}
+		},
+		"key3C":[
+			1,2,3
+		]
+	},
+	"key4":[1,2,3],
+	"key5":[
+		{"key5A":123},
+		{"key5A":234}
+	]
 }`)
 
 var r = []byte(`type Test struct {
@@ -31,19 +39,6 @@ var r = []byte(`type Test struct {
 	}
 	B float32
 }`)
-
-type Test struct {
-	s string
-	i int
-	T struct {
-		t1 string
-		t2 int
-		T1 struct {
-			t1A string
-		}
-	}
-	B float32
-}
 
 func Test_jsonParser_Parse(t *testing.T) {
 	pr := NewJSONParser(p)

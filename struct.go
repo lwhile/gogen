@@ -77,8 +77,9 @@ func (st *Struct) spaceStr() string {
 
 // Field :
 type Field struct {
-	Key  string
-	Type interface{}
+	Key   string
+	Type  interface{}
+	array bool
 }
 
 // // Type :
