@@ -11,3 +11,14 @@ type T struct {
 	C int
 	D string
 }
+
+type Test struct {
+	key1 string
+	key2 string
+	key3 struct {
+		key3A string
+		key3B struct {
+			key3BA string
+		}
+	}
+}

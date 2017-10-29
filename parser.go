@@ -44,6 +44,7 @@ func (pr *jsonParser) Parse() error {
 		return fmt.Errorf("parse error:%v is not a map[string]interface{}", pr.p)
 	}
 	pr.st = &Struct{Name: "Test"}
+	pr.st.depth = 1
 	pr.parse(pr.st, m)
 	pr.Render()
 	return nil
@@ -65,6 +66,7 @@ func (pr *jsonParser) parse(st *Struct, m map[string]interface{}) (err error) {
 			stInternal := &Struct{}
 			stInternal.Fields = make([]Field, 0)
 			stInternal.nesting = true
+			stInternal.depth = st.depth + 1
 			field.Type = stInternal
 			pr.parse(stInternal, mm)
 		}
@@ -99,20 +101,30 @@ func (pr *jsonParser) render(st *Struct) (err error) {
 	}
 
 	if !st.nesting {
-		if _, err = pr.bf.Write(st.firstStr()); err != nil {
+		if _, err = pr.bf.Write([]byte(st.firstStr())); err != nil {
 			return
 		}
 	} else {
-
+		if _, err = pr.bf.Write([]byte(" " + STRUCT + LEFTBRACE + BR)); err != nil {
+			return
+		}
 	}
 
 	for _, f := range st.Fields {
-		if _, err = pr.bf.Write([]byte(FOURSPACE + f.Key + SPACE)); err != nil {
+		if _, err = pr.bf.Write([]byte(st.spaceStr() + f.Key + SPACE)); err != nil {
 			return
 		}
-		if v, ok := st.(*Struct); ok {
-
+		if v, ok := f.Type.(*Struct); ok {
+			pr.render(v)
+		} else {
+			if _, err = pr.bf.Write([]byte(SPACE + typeStr(f.Type) + BR)); err != nil {
+				return
+			}
 		}
+		pr.bf.Write([]byte(BR))
+	}
+	if _, err = pr.bf.Write([]byte(BR + st.lastStr())); err != nil {
+		return
 	}
 	return nil
 }
@@ -122,7 +134,7 @@ func (pr *jsonParser) Output() error {
 }
 
 func (pr *jsonParser) String() string {
-	return pr.res
+	return string(pr.bf.Bytes())
 }
 
 func isMap(m interface{}) (map[string]interface{}, bool) {

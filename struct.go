@@ -24,6 +24,7 @@ type Struct struct {
 	Name    string
 	Fields  []Field
 	nesting bool
+	depth   int
 }
 
 // Serialize will make the Field formated to []byte
@@ -52,9 +53,27 @@ type Struct struct {
 // 	return
 // }
 
-func (st *Struct) firstStr() []byte {
-	return []byte(TYPE + SPACE + st.Name + SPACE + STRUCT + LEFTBRACE + BR)
+func (st *Struct) firstStr() string {
+	return TYPE + SPACE + st.Name + SPACE + STRUCT + LEFTBRACE + BR
 }
+
+func (st *Struct) lastStr() string {
+	var sp string
+	for i := 0; i < (st.depth-1)*4; i++ {
+		sp += " "
+	}
+	return sp + RIGHTBRACE
+}
+
+func (st *Struct) spaceStr() string {
+	var sp string
+	for i := 0; i < st.depth*4; i++ {
+		sp += " "
+	}
+	return sp
+}
+
+// func (st *Struct) nestingStr() []byte {}
 
 // Field :
 type Field struct {

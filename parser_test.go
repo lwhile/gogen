@@ -1,6 +1,7 @@
 package gogen
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -47,6 +48,7 @@ func Test_jsonParser_Parse(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	fmt.Println(pr.String())
 }
 
 func Test_jsonParser_isMap(t *testing.T) {
