@@ -77,19 +77,6 @@ func (pr *jsonParser) parse(st *Struct, m map[string]interface{}) (err error) {
 }
 
 func (pr *jsonParser) Render() error {
-	// var bf bytes.Buffer
-	// bf.Write([]byte(TYPE + SPACE + pr.st.Name + SPACE + STRUCT + LEFTBRACE + BR))
-	// for _, field := range pr.st.Fields {
-	// 	t, ok := field.Type.(string)
-	// 	if !ok {
-	// 		fmt.Println(field.Type)
-	// 		continue
-	// 	}
-	// 	bf.Write([]byte(FOURSPACE + field.Key + SPACE + t + BR))
-	// }
-	// bf.Write([]byte(RIGHTBRACE))
-	// fmt.Println(string(bf.Bytes()))
-	// fmt.Println(pr.st.Fields[2].Type)
 	return pr.render(pr.st)
 }
 
@@ -117,13 +104,18 @@ func (pr *jsonParser) render(st *Struct) (err error) {
 		if v, ok := f.Type.(*Struct); ok {
 			pr.render(v)
 		} else {
-			if _, err = pr.bf.Write([]byte(SPACE + typeStr(f.Type) + BR)); err != nil {
+			t, ok := f.Type.(string)
+			if !ok {
+				err = fmt.Errorf("%v not a string type", f.Type)
+				return
+			}
+			if _, err = pr.bf.Write([]byte(SPACE + t + BR)); err != nil {
 				return
 			}
 		}
-		pr.bf.Write([]byte(BR))
+		//pr.bf.Write([]byte(BR))
 	}
-	if _, err = pr.bf.Write([]byte(BR + st.lastStr())); err != nil {
+	if _, err = pr.bf.Write([]byte(st.lastStr())); err != nil {
 		return
 	}
 	return nil

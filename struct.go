@@ -62,7 +62,7 @@ func (st *Struct) lastStr() string {
 	for i := 0; i < (st.depth-1)*4; i++ {
 		sp += " "
 	}
-	return sp + RIGHTBRACE
+	return sp + RIGHTBRACE + BR
 }
 
 func (st *Struct) spaceStr() string {

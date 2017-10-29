@@ -11,7 +11,10 @@ var p = []byte(`{
 	"key3":{
 		"key3A":"value3A",
 		"key3B": {
-			"key3BA":"value3BA"
+			"key3BA":"value3BA",
+			"key3BB": {
+				"key3BBA":1
+			}
 		}
 	}
 }`)
