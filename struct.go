@@ -25,6 +25,7 @@ type Struct struct {
 	Fields  []Field
 	nesting bool
 	depth   int
+	isArray bool
 }
 
 // Serialize will make the Field formated to []byte

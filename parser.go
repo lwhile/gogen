@@ -60,9 +60,22 @@ func (pr *jsonParser) parse(st *Struct, m map[string]interface{}) (err error) {
 		field := Field{}
 		field.Key = k
 		// fmt.Println("field.Key:", field.Key)
+		arrFlag := false
+		if arr, ok := isArray(v); ok {
+			switch arr[len(arr)-1].(type) {
+			case map[string]interface{}:
+				v = arr[0]
+				arrFlag = true
+			}
+		}
 		if mm, ok := isMap(v); !ok {
 			// if _, ok := isArray(v); ok {
 			// 	field.array = true
+			// }
+			// if v, ok := isArray(v); ok {
+			// 	if _, ok := v.([]Struct); ok {
+
+			// 	}
 			// }
 			field.Type = typeStr(v)
 		} else {
@@ -70,6 +83,9 @@ func (pr *jsonParser) parse(st *Struct, m map[string]interface{}) (err error) {
 			stInternal.Fields = make([]Field, 0)
 			stInternal.nesting = true
 			stInternal.depth = st.depth + 1
+			if arrFlag {
+				stInternal.isArray = true
+			}
 			field.Type = stInternal
 			pr.parse(stInternal, mm)
 		}
@@ -95,7 +111,11 @@ func (pr *jsonParser) render(st *Struct) (err error) {
 			return
 		}
 	} else {
-		if _, err = pr.bf.Write([]byte(" " + STRUCT + LEFTBRACE + BR)); err != nil {
+		var arrStr string
+		if st.isArray {
+			arrStr = "[]"
+		}
+		if _, err = pr.bf.Write([]byte(" " + arrStr + STRUCT + LEFTBRACE + BR)); err != nil {
 			return
 		}
 	}
@@ -165,8 +185,8 @@ func typeStr(ife interface{}) (s string) {
 			s = "[]float64"
 		case string:
 			s = "[]string"
-			// default:
-			// 	s = "[]"
+		case map[string]interface{}:
+			s = "[]"
 		}
 	default:
 		s = "interface{}"
