@@ -1,9 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
-	"fmt"
+	"os"
+
+	"io/ioutil"
+
+	"github.com/lwhile/gogen"
+	"github.com/lwhile/log"
 )
 
 var p = []byte(`{
@@ -14,17 +18,37 @@ var p = []byte(`{
 }`)
 
 var (
-	name  = flag.String("name", "", "the name of struct")
+	name  = flag.String("name", "T", "the name of struct")
 	pkg   = flag.String("pkg", "main", "the package for generated code")
 	input = flag.String("input", "", "")
 )
 
 func main() {
-	var t interface{}
-	json.Unmarshal(p, &t)
-	fmt.Println(t)
-	switch v := t.(type) {
-	case map[string]interface{}:
-		fmt.Println(v)
+	flag.Parse()
+
+	if *input == "" {
+		log.Fatal("must specific a input file")
+	}
+	if *name == "" {
+		log.Info("struct is a default value: T")
+	}
+	fp, err := os.Open(*input)
+	if err != nil {
+		log.Fatal(err)
+	}
+	b, err := ioutil.ReadAll(fp)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	jsonParser := gogen.NewJSONParser(*name, *input, b)
+	if err = jsonParser.Parse(); err != nil {
+		log.Fatal(err)
+	}
+	if err = jsonParser.Render(); err != nil {
+		log.Fatal(err)
+	}
+	if err = jsonParser.Output(); err != nil {
+		log.Fatal(err)
 	}
 }

@@ -1,4 +1,4 @@
-{
-    "key1":"value1",
-    "key2":"value2"
+type T struct{
+    key1  string
+    key2  string
 }

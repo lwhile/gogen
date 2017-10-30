@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
+
+	"io/ioutil"
 
 	"github.com/lwhile/log"
 )
@@ -18,19 +19,30 @@ type Parser interface {
 }
 
 type jsonParser struct {
-	data []byte
-	res  string
-	fp   os.File
+	name string
 
-	p  interface{}
+	// data from input file
+	data []byte
+
+	savePath string
+
+	// used to save json.Unmarshal result
+	p interface{}
+
 	st *Struct
+
+	// result buffer
 	bf bytes.Buffer
+
+	result []byte
 }
 
 // NewJSONParser return a parser about json
-func NewJSONParser(b []byte) Parser {
+func NewJSONParser(name, path string, b []byte) Parser {
 	return &jsonParser{
-		data: b,
+		data:     b,
+		name:     name,
+		savePath: path,
 	}
 }
 
@@ -43,7 +55,7 @@ func (pr *jsonParser) Parse() error {
 	if !ok {
 		return fmt.Errorf("parse error:%v is not a map[string]interface{}", pr.p)
 	}
-	pr.st = &Struct{Name: "Test"}
+	pr.st = &Struct{Name: pr.name}
 	pr.st.depth = 1
 	pr.parse(pr.st, m)
 	pr.Render()
@@ -141,15 +153,25 @@ func (pr *jsonParser) render(st *Struct) (err error) {
 	if _, err = pr.bf.Write([]byte(st.lastStr())); err != nil {
 		return
 	}
+	pr.result = pr.bf.Bytes()
+	pr.bf.Reset()
 	return nil
 }
 
-func (pr *jsonParser) Output() error {
+func (pr *jsonParser) Output() (err error) {
+	if pr.result == nil {
+		err = fmt.Errorf("parse result is nil")
+		log.Error(err)
+		return
+	}
+	if err = ioutil.WriteFile(pr.savePath, pr.result, 0666); err != nil {
+		return
+	}
 	return nil
 }
 
 func (pr *jsonParser) String() string {
-	return string(pr.bf.Bytes())
+	return string(pr.result)
 }
 
 func isMap(m interface{}) (map[string]interface{}, bool) {
