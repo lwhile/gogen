@@ -19,12 +19,8 @@ type Parser interface {
 }
 
 type jsonParser struct {
-	name string
-
 	// data from input file
 	data []byte
-
-	savePath string
 
 	// used to save json.Unmarshal result
 	p interface{}
@@ -34,15 +30,18 @@ type jsonParser struct {
 	// result buffer
 	bf bytes.Buffer
 
-	result []byte
+	structName string
+	pkgName    string
+	output     string
 }
 
 // NewJSONParser return a parser about json
-func NewJSONParser(name, path string, b []byte) Parser {
+func NewJSONParser(pkgName, structName, output string, b []byte) Parser {
 	return &jsonParser{
-		data:     b,
-		name:     name,
-		savePath: path,
+		data:       b,
+		pkgName:    pkgName,
+		structName: structName,
+		output:     output,
 	}
 }
 
@@ -55,10 +54,9 @@ func (pr *jsonParser) Parse() error {
 	if !ok {
 		return fmt.Errorf("parse error:%v is not a map[string]interface{}", pr.p)
 	}
-	pr.st = &Struct{Name: pr.name}
+	pr.st = &Struct{Name: pr.structName}
 	pr.st.depth = 1
 	pr.parse(pr.st, m)
-	pr.Render()
 	return nil
 }
 
@@ -81,14 +79,6 @@ func (pr *jsonParser) parse(st *Struct, m map[string]interface{}) (err error) {
 			}
 		}
 		if mm, ok := isMap(v); !ok {
-			// if _, ok := isArray(v); ok {
-			// 	field.array = true
-			// }
-			// if v, ok := isArray(v); ok {
-			// 	if _, ok := v.([]Struct); ok {
-
-			// 	}
-			// }
 			field.Type = typeStr(v)
 		} else {
 			stInternal := &Struct{}
@@ -108,6 +98,9 @@ func (pr *jsonParser) parse(st *Struct, m map[string]interface{}) (err error) {
 }
 
 func (pr *jsonParser) Render() error {
+	if _, err := pr.bf.Write([]byte("package " + pr.pkgName + BR + BR)); err != nil {
+		return err
+	}
 	return pr.render(pr.st)
 }
 
@@ -153,25 +146,19 @@ func (pr *jsonParser) render(st *Struct) (err error) {
 	if _, err = pr.bf.Write([]byte(st.lastStr())); err != nil {
 		return
 	}
-	pr.result = pr.bf.Bytes()
-	pr.bf.Reset()
+
 	return nil
 }
 
 func (pr *jsonParser) Output() (err error) {
-	if pr.result == nil {
-		err = fmt.Errorf("parse result is nil")
-		log.Error(err)
-		return
-	}
-	if err = ioutil.WriteFile(pr.savePath, pr.result, 0666); err != nil {
+	if err = ioutil.WriteFile(pr.output, pr.bf.Bytes(), 0666); err != nil {
 		return
 	}
 	return nil
 }
 
 func (pr *jsonParser) String() string {
-	return string(pr.result)
+	return string(pr.bf.Bytes())
 }
 
 func isMap(m interface{}) (map[string]interface{}, bool) {

@@ -1,4 +1,19 @@
-type T struct{
-    key1  string
-    key2  string
+{
+    "key1":1,
+    "key2":[1,2,3],
+    "key3":"Hello",
+    "key4":{
+        "key4A":1,
+        "key4B":[1,2,3],
+        "key4C":"Hello",
+        "key4D":{
+            "key4DA":"123"
+        }
+    },
+    "key5":["A","B","C"],
+    "key6":[
+        {"key6A":123},
+        {"key6A":123}
+    ]
 }
+    

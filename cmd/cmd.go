@@ -18,19 +18,30 @@ var p = []byte(`{
 }`)
 
 var (
-	name  = flag.String("name", "T", "the name of struct")
-	pkg   = flag.String("pkg", "main", "the package for generated code")
-	input = flag.String("input", "", "")
+	name   = flag.String("name", "T", "the name of struct")
+	pkg    = flag.String("pkg", "main", "the package for generated code")
+	input  = flag.String("input", "", "location where input data")
+	output = flag.String("output", "", "location where ouput data")
 )
 
 func main() {
 	flag.Parse()
-
+	if *pkg == "" {
+		*pkg = "main"
+	}
 	if *input == "" {
 		log.Fatal("must specific a input file")
 	}
 	if *name == "" {
 		log.Info("struct is a default value: T")
+	}
+	if *output == "" {
+		p, err := os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
+		*output = p
+		log.Infof("use working directory %s as output path", p)
 	}
 	fp, err := os.Open(*input)
 	if err != nil {
@@ -40,8 +51,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	jsonParser := gogen.NewJSONParser(*name, *input, b)
+	jsonParser := gogen.NewJSONParser(*pkg, *name, *output, b)
 	if err = jsonParser.Parse(); err != nil {
 		log.Fatal(err)
 	}
