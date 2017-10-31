@@ -32,7 +32,7 @@ Developing
     
 ```
 
-use gogen you can get a go file:
+use gogen you can get this go file:
 
 ```go
 package main
