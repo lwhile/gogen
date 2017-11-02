@@ -2,12 +2,8 @@ package main
 
 import (
 	"flag"
-	"os"
 
-	"io/ioutil"
-
-	"github.com/lwhile/gogen"
-	"github.com/lwhile/log"
+	"github.com/lwhile/gogen/service"
 )
 
 var p = []byte(`{
@@ -25,40 +21,41 @@ var (
 )
 
 func main() {
-	flag.Parse()
-	if *pkg == "" {
-		*pkg = "main"
-	}
-	if *input == "" {
-		log.Fatal("must specific a input file")
-	}
-	if *name == "" {
-		log.Info("struct is a default value: T")
-	}
-	if *output == "" {
-		p, err := os.Getwd()
-		if err != nil {
-			log.Fatal(err)
-		}
-		*output = p
-		log.Infof("use working directory %s as output path", p)
-	}
-	fp, err := os.Open(*input)
-	if err != nil {
-		log.Fatal(err)
-	}
-	b, err := ioutil.ReadAll(fp)
-	if err != nil {
-		log.Fatal(err)
-	}
-	jsonParser := gogen.NewJSONParser(*pkg, *name, *output, b)
-	if err = jsonParser.Parse(); err != nil {
-		log.Fatal(err)
-	}
-	if err = jsonParser.Render(); err != nil {
-		log.Fatal(err)
-	}
-	if err = jsonParser.Output(); err != nil {
-		log.Fatal(err)
-	}
+	// flag.Parse()
+	// if *pkg == "" {
+	// 	*pkg = "main"
+	// }
+	// if *input == "" {
+	// 	log.Fatal("must specific a input file")
+	// }
+	// if *name == "" {
+	// 	log.Info("struct is a default value: T")
+	// }
+	// if *output == "" {
+	// 	p, err := os.Getwd()
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	*output = p
+	// 	log.Infof("use working directory %s as output path", p)
+	// }
+	// fp, err := os.Open(*input)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// b, err := ioutil.ReadAll(fp)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// jsonParser := gogen.NewJSONParser(*pkg, *name, *output, b)
+	// if err = jsonParser.Parse(); err != nil {
+	// 	log.Fatal(err)
+	// }
+	// if err = jsonParser.Render(); err != nil {
+	// 	log.Fatal(err)
+	// }
+	// if err = jsonParser.Output(); err != nil {
+	// 	log.Fatal(err)
+	// }
+	service.Start(":8080")
 }
