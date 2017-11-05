@@ -57,6 +57,7 @@ func (pr *jsonParser) Parse() error {
 	pr.st = &Struct{Name: pr.structName}
 	pr.st.depth = 1
 	pr.parse(pr.st, m)
+	log.Info("Parse struct success")
 	return nil
 }
 
@@ -101,7 +102,12 @@ func (pr *jsonParser) Render() error {
 	if _, err := pr.bf.Write([]byte("package " + pr.pkgName + BR + BR)); err != nil {
 		return err
 	}
-	return pr.render(pr.st)
+	err := pr.render(pr.st)
+	if err != nil {
+		return err
+	}
+	log.Info("Render json success")
+	return nil
 }
 
 func (pr *jsonParser) render(st *Struct) (err error) {
@@ -154,6 +160,7 @@ func (pr *jsonParser) Output() (err error) {
 	if err = ioutil.WriteFile(pr.output, pr.bf.Bytes(), 0666); err != nil {
 		return
 	}
+	log.Info("Output result success")
 	return nil
 }
 

@@ -70,3 +70,17 @@ go build -o gogen cmd/cmd.go
 ```
 ./gogen -input /usr/local/Go/src/github.com/lwhile/gogen/main.json -output ./A.go
 ```
+
+Or start gogen as a http service:
+
+```
+./gogen -web 
+```
+
+Open [http://127.0.0.1:4928/static/index.html](http://127.0.0.1:4928/static/index.html)
+
+
+## rode map
+[ ] Use fixed order
+
+[ ] Converts any file into managable Go source code

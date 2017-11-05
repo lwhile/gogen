@@ -2,9 +2,8 @@ package main
 
 import (
 	"flag"
-	"os"
-
 	"io/ioutil"
+	"os"
 
 	"github.com/lwhile/gogen"
 	"github.com/lwhile/log"
@@ -22,43 +21,72 @@ var (
 	pkg    = flag.String("pkg", "main", "the package for generated code")
 	input  = flag.String("input", "", "location where input data")
 	output = flag.String("output", "", "location where ouput data")
+	web    = flag.Bool("web", false, "start web mode")
+	port   = flag.String("port", "4928", "listen port")
 )
 
-func main() {
+const (
+	defaultOutput = "./gogen_result.go"
+	defaultInput  = "./input.json"
+)
+
+func helper() string {
+	return ""
+}
+
+func initEnv() {
 	flag.Parse()
+	if *web {
+		log.Info("Use web mode")
+		return
+	}
+	// package name
 	if *pkg == "" {
 		*pkg = "main"
 	}
 	if *input == "" {
-		log.Fatal("must specific a input file")
+		*input = defaultInput
+		log.Info("Use default input file:./input.json")
 	}
 	if *name == "" {
-		log.Info("struct is a default value: T")
+		log.Info("Use a default struct name: T")
 	}
 	if *output == "" {
-		p, err := os.Getwd()
+		*output = defaultOutput
+		log.Infof("Use default output file:%s", *output)
+	}
+
+}
+
+func main() {
+	// init flag
+	initEnv()
+
+	if !*web {
+		fp, err := os.Open(*input)
 		if err != nil {
 			log.Fatal(err)
 		}
-		*output = p
-		log.Infof("use working directory %s as output path", p)
+		data, err := ioutil.ReadAll(fp)
+		if err != nil {
+			log.Fatal(err)
+		}
+		jsonParser := gogen.NewJSONParser(*pkg, *name, *output, data)
+		if err = jsonParser.Parse(); err != nil {
+			log.Fatal(err)
+		}
+		if err = jsonParser.Render(); err != nil {
+			log.Fatal(err)
+		}
+		if err = jsonParser.Output(); err != nil {
+			log.Fatal(err)
+		}
+		return
 	}
-	fp, err := os.Open(*input)
+
+	log.Infof("Starting web server and listen at port %s", *port)
+	err := gogen.StartServer(*port)
 	if err != nil {
-		log.Fatal(err)
-	}
-	b, err := ioutil.ReadAll(fp)
-	if err != nil {
-		log.Fatal(err)
-	}
-	jsonParser := gogen.NewJSONParser(*pkg, *name, *output, b)
-	if err = jsonParser.Parse(); err != nil {
-		log.Fatal(err)
-	}
-	if err = jsonParser.Render(); err != nil {
-		log.Fatal(err)
-	}
-	if err = jsonParser.Output(); err != nil {
 		log.Fatal(err)
 	}
 }

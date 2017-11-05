@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js">
+        </script>
+    </head>
+    
+    <body>
+        <div id="input_area">
+            <textarea id="json_textarea" rows="30" cols="80">
+                        输入要转换的JSON
+            </textarea>
+            <button id="transfer" onclick="transfer()">转换</button>
+        </div>
+        <div id="output_area">
+                <textarea id="go_textarea" rows="30" cols="80">
+                           转换结果
+                </textarea>
+        </div>
+    </body>
+<script>
+    function transfer() {
+        var url = "/api/gogen"
+        $.ajax({
+            method:"POST",
+            url:url,
+            data:$('#json_textarea').val(),
+            success:function(resp) {
+                var resp_json = JSON.parse(resp)
+                console.log("resp_json:",resp_json)
+                if(resp_json.status) {
+                    $('#go_textarea').val(resp_json.result);
+                } else {
+                    console.log(resp_json.message)
+                }
+            },
+            error:function(resp) {
+                alert(resp)
+            }
+        })
+    }
+</script>
+</html>
