@@ -9,9 +9,7 @@
     
     <body>
         <div id="input_area">
-            <textarea id="json_textarea" rows="30" cols="80">
-                        输入要转换的JSON
-            </textarea>
+            <textarea id="json_textarea" rows="30" cols="80"></textarea>
             <button id="transfer" onclick="transfer()">转换</button>
         </div>
         <div id="output_area">
@@ -37,7 +35,8 @@
                 }
             },
             error:function(resp) {
-                alert(resp)
+                var resp_json = JSON.parse(resp)
+                alert(resp_json.message)
             }
         })
     }
