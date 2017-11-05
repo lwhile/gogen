@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"sort"
 
 	"io/ioutil"
 
@@ -67,7 +68,10 @@ func (pr *jsonParser) parse(st *Struct, m map[string]interface{}) (err error) {
 		log.Error(err)
 		return
 	}
-	for k, v := range m {
+
+	pairs := map2PairSlice(m)
+	for _, elem := range pairs {
+		k, v := elem.key, elem.val
 		field := Field{}
 		field.Key = k
 		// fmt.Println("field.Key:", field.Key)
@@ -214,4 +218,32 @@ func typeStr(ife interface{}) (s string) {
 		s = "interface{}"
 	}
 	return
+}
+
+type opair struct {
+	key string
+	val interface{}
+}
+
+type opairs []opair
+
+func (o opairs) Len() int {
+	return len(o)
+}
+
+func (o opairs) Less(i, j int) bool {
+	return o[i].key <= o[j].key
+}
+
+func (o opairs) Swap(i, j int) {
+	o[i], o[j] = o[j], o[i]
+}
+
+func map2PairSlice(m map[string]interface{}) opairs {
+	slice := make(opairs, 0, len(m))
+	for k, v := range m {
+		slice = append(slice, opair{k, v})
+	}
+	sort.Sort(slice)
+	return slice
 }
