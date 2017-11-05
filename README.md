@@ -83,7 +83,9 @@ Open [http://127.0.0.1:4928/static/index.html](http://127.0.0.1:4928/static/inde
 
 
 ## rode map
-- [ ] Use fixed order
+- [x] Use fixed order
+
+- [ ] Add json tag 
 
 - [ ] Converts static file into managable Go source code
 

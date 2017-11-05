@@ -1,7 +1,7 @@
 package gogen
 
 import (
-	"fmt"
+	"strconv"
 	"testing"
 )
 
@@ -40,14 +40,14 @@ var r = []byte(`type Test struct {
 	B float32
 }`)
 
-func Test_jsonParser_Parse(t *testing.T) {
-	pr := NewJSONParser(p)
-	err := pr.Parse()
-	if err != nil {
-		t.Error(err)
-	}
-	fmt.Println(pr.String())
-}
+// func Test_jsonParser_Parse(t *testing.T) {
+// 	pr := NewJSONParser(p)
+// 	err := pr.Parse()
+// 	if err != nil {
+// 		t.Error(err)
+// 	}
+// 	fmt.Println(pr.String())
+// }
 
 func Test_jsonParser_isMap(t *testing.T) {
 
@@ -55,4 +55,17 @@ func Test_jsonParser_isMap(t *testing.T) {
 
 func TestNewJSONParser(t *testing.T) {
 
+}
+
+func Test_map2PairSlice(t *testing.T) {
+	m := make(map[string]interface{})
+	for i := 0; i < 10; i++ {
+		m[strconv.Itoa(i)] = i
+	}
+	opairs := map2PairSlice(m)
+	for index, elem := range opairs {
+		if elem.key != strconv.Itoa(index) {
+			t.Error()
+		}
+	}
 }
