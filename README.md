@@ -1,5 +1,7 @@
 # gogen
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/lwhile/gogen)](https://goreportcard.com/report/github.com/lwhile/gogen)
+
 gogen is a tool used to generate JSON structure definition automatically.
 
 You can write json files to generate Go's struct definitions
