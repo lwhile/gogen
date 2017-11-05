@@ -85,6 +85,6 @@ Open [http://127.0.0.1:4928/static/index.html](http://127.0.0.1:4928/static/inde
 ## rode map
 - [ ] Use fixed order
 
-- [ ] Converts any file into managable Go source code
+- [ ] Converts static file into managable Go source code
 
 - [ ] Import web front end page 
