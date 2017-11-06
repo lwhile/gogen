@@ -1,5 +1,7 @@
 package gogen
 
+import "fmt"
+
 const (
 	// TYPE :
 	TYPE = "type"
@@ -37,7 +39,7 @@ func (st *Struct) lastStr() string {
 	for i := 0; i < (st.depth-1)*4; i++ {
 		sp += " "
 	}
-	return sp + RIGHTBRACE + BR
+	return sp + RIGHTBRACE 
 }
 
 func (st *Struct) spaceStr() string {
@@ -53,4 +55,9 @@ type Field struct {
 	Key   string
 	Type  interface{}
 	array bool
+}
+
+// return json tag
+func (field *Field) tag() string {
+	return fmt.Sprintf(" `json:\"%s\"`", field.Key)
 }
