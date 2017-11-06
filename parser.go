@@ -149,16 +149,18 @@ func (pr *jsonParser) render(st *Struct) (err error) {
 				err = fmt.Errorf("%v not a string type", f.Type)
 				return
 			}
-			if _, err = pr.bf.Write([]byte(SPACE + t + BR)); err != nil {
+			if _, err = pr.bf.Write([]byte(SPACE + t)); err != nil {
 				return
 			}
+		}
+		if _, err = pr.bf.Write([]byte(fmt.Sprintf(" `json:\"%s\"`\n", f.Key))); err != nil {
+			return
 		}
 		//pr.bf.Write([]byte(BR))
 	}
 	if _, err = pr.bf.Write([]byte(st.lastStr())); err != nil {
 		return
 	}
-
 	return nil
 }
 
