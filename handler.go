@@ -22,7 +22,7 @@ func genStruct(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		resp.Status = false
 		resp.Message = "服务器异常"
-		w.WriteHeader(500)
+		renderJSON(w, &resp)
 		return
 	}
 
@@ -31,24 +31,29 @@ func genStruct(w http.ResponseWriter, r *http.Request) {
 		log.Error(err)
 		resp.Status = false
 		resp.Message = "非JSON数据"
-		w.WriteHeader(400)
+		renderJSON(w, &resp)
 		return
 	}
 	if err = jsonParser.Render(); err != nil {
 		log.Error(err)
 		resp.Status = false
 		resp.Message = "服务器异常"
-		w.WriteHeader(500)
+		renderJSON(w, &resp)
 		return
 	}
 
 	resp.Status = true
 	resp.Message = "success"
 	resp.Result = jsonParser.String()
-	d, err := json.Marshal(&resp)
+	renderJSON(w, &resp)
+}
+
+func renderJSON(w http.ResponseWriter, resp *Response) {
+	d, err := json.Marshal(resp)
 	if err != nil {
 		log.Error(err)
 		w.WriteHeader(500)
+		return
 	}
 	w.Write(d)
 }

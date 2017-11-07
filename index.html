@@ -31,12 +31,11 @@
                 if(resp_json.status) {
                     $('#go_textarea').val(resp_json.result);
                 } else {
-                    console.log(resp_json.message)
+                    alert(resp_json.message)
                 }
             },
             error:function(resp) {
-                var resp_json = JSON.parse(resp)
-                alert(resp_json.message)
+                alert(resp)
             }
         })
     }
