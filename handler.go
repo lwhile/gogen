@@ -30,8 +30,8 @@ func genStruct(w http.ResponseWriter, r *http.Request) {
 	if err = jsonParser.Parse(); err != nil {
 		log.Error(err)
 		resp.Status = false
-		resp.Message = "服务器异常"
-		w.WriteHeader(500)
+		resp.Message = "非JSON数据"
+		w.WriteHeader(400)
 		return
 	}
 	if err = jsonParser.Render(); err != nil {
