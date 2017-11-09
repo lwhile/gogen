@@ -87,6 +87,6 @@ Open [http://127.0.0.1:4928/static/index.html](http://127.0.0.1:4928/static/inde
 
 - [x] Add json tag 
 
-- [ ] Converts static file into managable Go source code
+- [x] Import web front end page 
 
-- [ ] Import web front end page 
+- [ ] Converts static file into managable Go source code
