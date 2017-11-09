@@ -8,6 +8,8 @@ import (
 
 	"io/ioutil"
 
+	"strings"
+
 	"github.com/lwhile/log"
 )
 
@@ -138,7 +140,7 @@ func (pr *jsonParser) render(st *Struct) (err error) {
 	}
 
 	for _, f := range st.Fields {
-		if _, err = pr.bf.Write([]byte(st.spaceStr() + f.Key + SPACE)); err != nil {
+		if _, err = pr.bf.Write([]byte(st.spaceStr() + upperFirstKey(f.Key) + SPACE)); err != nil {
 			return
 		}
 		if v, ok := f.Type.(*Struct); ok {
@@ -192,14 +194,6 @@ func typeStr(ife interface{}) (s string) {
 		s = "string"
 	case []string:
 		s = "[]string"
-	case int:
-		s = "int"
-	case int64:
-		s = "int64"
-	case int32:
-		s = "int32"
-	case float32:
-		s = "float32"
 	case float64:
 		s = "float64"
 	case []interface{}:
@@ -248,4 +242,12 @@ func map2PairSlice(m map[string]interface{}) opairs {
 	}
 	sort.Sort(slice)
 	return slice
+}
+
+func upperFirstKey(key string) string {
+	r := []rune(key)
+	if len(r) == 0 {
+		return ""
+	}
+	return strings.ToUpper(string(r[0])) + string(r[1:])
 }

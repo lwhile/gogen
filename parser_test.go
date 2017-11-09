@@ -40,15 +40,6 @@ var r = []byte(`type Test struct {
 	B float32
 }`)
 
-// func Test_jsonParser_Parse(t *testing.T) {
-// 	pr := NewJSONParser(p)
-// 	err := pr.Parse()
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	fmt.Println(pr.String())
-// }
-
 func Test_jsonParser_isMap(t *testing.T) {
 
 }
@@ -67,5 +58,17 @@ func Test_map2PairSlice(t *testing.T) {
 		if elem.key != strconv.Itoa(index) {
 			t.Error()
 		}
+	}
+}
+
+func Test_upperFirstKey(t *testing.T) {
+	s := upperFirstKey("abc")
+	if s != "Abc" {
+		t.Errorf("%s != %s", s, "Abc")
+	}
+
+	s = upperFirstKey("a")
+	if s != "A" {
+		t.Errorf("%s != %s", s, "A")
 	}
 }

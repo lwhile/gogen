@@ -5,18 +5,23 @@
         <meta charset="utf-8">
         <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js">
         </script>
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+        <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </head>
     
     <body>
-        <div id="input_area">
-            <textarea id="json_textarea" rows="30" cols="80"></textarea>
-            <button id="transfer" onclick="transfer()">转换</button>
-        </div>
-        <div id="output_area">
-                <textarea id="go_textarea" rows="30" cols="80">
-                           转换结果
-                </textarea>
-        </div>
+            <div class="col-xs-15 col-sm-15">
+                <div id="input_area" class="col-xs-6 col-lg-4">
+                        <textarea id="json_textarea" rows="30" cols="80"></textarea>
+                </div>
+                <button class="col-xs-3 col-lg-2" id="transfer" onclick="transfer()">转换</button>
+                <div id="output_area" class="col-xs-6 col-lg-4">
+                    <textarea id="go_textarea" rows="30" cols="80">
+                                    转换结果
+                    </textarea>
+                </div>
+            </div>
     </body>
 <script>
     function transfer() {
