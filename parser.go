@@ -196,6 +196,8 @@ func typeStr(ife interface{}) (s string) {
 		s = "[]string"
 	case float64:
 		s = "float64"
+	case bool:
+		s = "bool"
 	case []interface{}:
 		v := ife.([]interface{})
 		if len(v) < 1 {
@@ -203,6 +205,8 @@ func typeStr(ife interface{}) (s string) {
 			return
 		}
 		switch v[len(v)-1].(type) {
+		case bool:
+			s = "[]bool"
 		case float64:
 			s = "[]float64"
 		case string:
